@@ -3,6 +3,7 @@
 require_once dirname(dirname(__FILE__)). '\core\database.php';
 
 class dataTeacher{
+    protected $id;
     protected $DNI;
     protected $Nombres_docente;
     protected $Apellidos_docente;
@@ -14,7 +15,7 @@ class dataTeacher{
     protected function listTeachers()
     {
         $ic = new Conexion();
-        $sql = "SELECT DNI,Nombres_docente,Apellidos_docente,Grado,email_docente FROM docentes";
+        $sql = "SELECT DNI,Nombres_docente,Apellidos_docente,Grado,email_docente,Foto_docente FROM docentes";
         $consulta = $ic->db->prepare($sql);
         $consulta->execute();
         $objetoConsulta = $consulta->fetchAll(PDO::FETCH_OBJ);
@@ -35,6 +36,24 @@ class dataTeacher{
         $insert->bindParam(6, $this->Foto_docente);
         $insert->bindParam(7, $this->email_docente);
         return $insert->execute();
+        
+    }
+
+    protected function updateInfoModelTeacher()
+    {
+        $ic = new Conexion();
+        $sql = "UPDATE docentes SET DNI='$this->DNI',Nombres_docente='$this->Nombres_docente',Apellidos_docente='$this->Apellidos_docente' WHERE DNI='$this->id'";
+        $updateteacher = $ic->db->prepare($sql);
+        return $updateteacher->execute();
+        
+    }
+
+    protected function deleteInfoModelTeacher()
+    {
+        $ic = new Conexion();
+        $sql = "DELETE FROM docentes  WHERE DNI='$this->DNI'";
+        $deleteteacher = $ic->db->prepare($sql);
+        return $deleteteacher->execute();
         
     }
 

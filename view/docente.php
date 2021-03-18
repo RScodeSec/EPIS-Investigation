@@ -61,6 +61,8 @@ require_once 'layout/header.php';
                     <input type="text" class="form-control" id="lastname" required>
                     <label for="email" class="col-form-label">Email:</label>
                     <input type="email" class="form-control" id="email" required>
+                    <input type="text" class="form-control" id="imgname" value="0">
+
                 </div>
                 <div class="form-group">
                     <label for="descripcion" class="col-form-label">Fotografia:</label>

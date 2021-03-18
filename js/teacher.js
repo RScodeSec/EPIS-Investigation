@@ -23,35 +23,41 @@ $(function () {
 				data: null,
 				targets: -1,
 				defaultContent:
-					'<button class="editar_b"><i class="fas fa-edit editar"></i></button> <button class="eliminar_b"><i class="fas fa-trash-alt editar"></i></button>',
+					'<button class="editar_b1"><i class="fas fa-edit editar"></i></button> <button class="eliminar_b1"><i class="fas fa-trash-alt editar"></i></button>',
 			},
 		],
 	});
 
-    $("#cousetable tbody").on("click", ".editar_b", function(){
+    $("#teachertable tbody").on("click", ".editar_b1", function(){
         
         let data = tableProd.row($(this).parents("tr")).data();
-        $("#id").val(data["Codigo_asignatura"]);
-        $("#codecourse").val(data["Codigo_asignatura"]);
-		$("#namecouse").val(data["Curso"]);
-		$("#degree").val(data["Ciclo"]); 
+        $("#id").val(data["DNI"]);
+        $("#dni").val(data["DNI"]);
+        $("#grado").val(data["Grado"]);
+		$("#name").val(data["Nombres_docente"]);
+		$("#lastname").val(data["Apellidos_docente"]);
+        $("#email").val(data["email_docente"]); 
+        let name = data["Foto_docente"];
+        $("#imgname").val(data["Foto_docente"]);
         
         $(".modal-header").css("background-color", "#007bff");
         $(".modal-header").css("color", "white");
-        $(".modal-title").text("Editar Asignatura");            
-        $("#courseModal").modal("show");
+        $(".modal-title").text("Editar Docente");            
+        $("#teacherModal").modal("show");
 
     });
 
-    $("#cousetable tbody").on("click", ".eliminar_b", function(){
-        let id = tableProd.row($(this).parents("tr")).data()["Codigo_asignatura"];
+    $("#teachertable tbody").on("click", ".eliminar_b1", function(){
+        let id = tableProd.row($(this).parents("tr")).data()["DNI"];
+        let nameimage = tableProd.row($(this).parents("tr")).data()["Foto_docente"];
         let data = {
-            action: "deletecourse",
+            action: "deleteTeacher",
             id: id,
+            nameimage:nameimage
         }
         $.ajax({
             type: "POST",
-            url: "../controller/courseController.php",
+            url: "../controller/teacherController.php",
             data: data,
             success: function(response){
                 console.log(response);
@@ -61,8 +67,8 @@ $(function () {
                     text: result.text,
                     icon: result.icon
                   }).then(function() {
-                    $("#courseModal").modal("hide");
-                    $("#cousetable").DataTable().ajax.reload(null, false);
+                    $("#teacherModal").modal("hide");
+                    $("#teachertable").DataTable().ajax.reload(null, false);
                     
                   });            
 
@@ -87,18 +93,23 @@ $("#btnNewteacher").click(function(){
 $("#formteacher").submit(function(e){
     e.preventDefault();
     var fdata = new FormData();
+    let id = $('#id').val();
     let dni = $('#dni').val();
     let grado = $('#grado').val();
     let name = $('#name').val();
     let lastname = $('#lastname').val();
     let email = $('#email').val();
+    let imgname = $("#imgname").val();
+
     let file = $('#file')[0].files[0];
     fdata.append('action', 'insertTeacher');
+    fdata.append('id', id);
     fdata.append('dni', dni);
     fdata.append('grado', grado);
     fdata.append('name', name);
     fdata.append('lastname', lastname);
     fdata.append('email', email);
+    fdata.append('imgname', imgname);
 
     fdata.append('file', file);
     

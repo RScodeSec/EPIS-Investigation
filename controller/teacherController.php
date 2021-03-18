@@ -8,8 +8,9 @@ class teacher extends dataTeacher {
         echo json_encode($resultTeacher);       
     }
 
-    public function saveTeacher($dni,$grado,$name,$lastname,$email,$image,$contrasena)
+    public function saveTeacher($id,$dni,$grado,$name,$lastname,$email,$image,$contrasena)
     {
+        $this->id = $id;
         $this->DNI = $dni;
         $this->Nombres_docente = $name;
         $this->Apellidos_docente = $lastname;
@@ -17,10 +18,28 @@ class teacher extends dataTeacher {
         $this->Pass = $contrasena;
         $this->Foto_docente = $image;
         $this->email_docente = $email;
+        if($id==0)
+        {
+            $resulteacher = $this->saveInfoModelTeacher();
+            echo $resulteacher ? json_encode(['title' => 'Perfecto!', 'text' => 'Docente agregado Correctamente','icon' => 'success']):
+            json_encode(['title' => 'Noo!', 'text' => 'No se Pudo Agregar al Docente','icon' => 'error']);
 
-        $resulteacher = $this->saveInfoModelTeacher();
-        echo $resulteacher ? json_encode(['title' => 'Perfecto!', 'text' => 'Docente agregado Correctamente','icon' => 'success']):
-        json_encode(['title' => 'Noo!', 'text' => 'No se Pudo Agregar al Docente','icon' => 'error']);
+        }
+        else{
+            $resulupdateteacher = $this->updateInfoModelTeacher();
+            echo $resulupdateteacher ? json_encode(['title' => 'Perfecto!', 'text' => 'Docente Actualizado Correctamente','icon' => 'success']):
+            json_encode(['title' => 'Noo!', 'text' => 'No se Pudo Actualizar al  Docente','icon' => 'error']);
+
+        }
+        
+    }
+
+    public function deleteTeacher($dni)
+    {
+        $this->DNI = $dni;
+        $resulUpdateteacher = $this->deleteInfoModelTeacher();
+        echo $resulUpdateteacher ? json_encode(['title' => 'Perfecto!', 'text' => 'Docente Eliminado Correctamente','icon' => 'success']):
+        json_encode(['title' => 'Noo!', 'text' => 'No se Pudo Eliminar al Docente','icon' => 'error']);
         
     }
 
@@ -52,9 +71,25 @@ if(isset($_POST['action']) && $_POST['action']=='insertTeacher'){
     $imageurl = "../public/imgTeacher/" . $newname;
 
     $imagenTemp = $_FILES['file']['tmp_name'];
-    move_uploaded_file($imagenTemp, $imageurl);
+    move_uploaded_file($imagenTemp, $imageurl);   
 
-    $instancia->saveTeacher($_POST['dni'],$_POST['grado'],$_POST['name'],$_POST['lastname'],$_POST['email'],$newname,$contrasena);
+
+
+
+    $instancia->saveTeacher($_POST['id'],$_POST['dni'],$_POST['grado'],$_POST['name'],$_POST['lastname'],$_POST['email'],$newname,$contrasena);
+}
+
+if(isset($_POST['action']) && $_POST['action']=='deleteTeacher'){
+    $instancia = new teacher();
+    if($_POST['nameimage']!=""){
+        $eliminarimage = "../public/imgTeacher/" . $_POST['nameimage'];
+        unlink($eliminarimage);
+
+    }
+    
+
+    $instancia->deleteTeacher($_POST['id']);
+
 }
 
 ?>
